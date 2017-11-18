@@ -16,7 +16,15 @@ fun main(args: Array<String>) {
     val parser = Parser()
     val json = parser.parse(StringBuilder(response.third.get())) as JsonObject
 
-    verifyToken(json["access_token"].toString())
+    try {
+        verifyToken(json["access_token"].toString())
+    }
+    catch (exception: Exception) {
+        println("Invalid Token!")
+        throw exception
+    }
+
+    println("Valid Token!")
 }
 
 fun verifyToken(token: String) {
@@ -39,10 +47,4 @@ fun verifyToken(token: String) {
             .build()
 
     val verifiedToken = verifier.verify(token)
-    verifiedToken.claims.forEach { type, claim ->
-        when {
-            claim.asString() != null -> println("$type: ${claim.asString()}")
-            claim.asDate() != null -> println("$type: ${claim.asDate()}")
-        }
-    }
 }
