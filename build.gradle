@@ -2,6 +2,7 @@ version '1.0-SNAPSHOT'
 
 buildscript {
     ext.kotlin_version = '1.1.60'
+    ext.ktor_version = '0.9.0'
 
     repositories {
         mavenCentral()
@@ -11,15 +12,27 @@ buildscript {
     }
 }
 
+apply plugin: 'java'
 apply plugin: 'kotlin'
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
 
 repositories {
     mavenCentral()
     jcenter()
+    maven { url "https://dl.bintray.com/kotlin/kotlinx" }
+    maven { url "https://dl.bintray.com/kotlin/ktor" }
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "io.ktor:ktor-server-netty:$ktor_version"
+    compile "io.ktor:ktor-auth:0.9.0"
+    compile "ch.qos.logback:logback-classic:1.2.1"
     compile "com.github.kittinunf.fuel:fuel:1.11.0"
     compile "com.beust:klaxon:0.32"
     compile "com.auth0:jwks-rsa:0.3.0"

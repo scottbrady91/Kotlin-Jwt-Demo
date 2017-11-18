@@ -1,6 +1,7 @@
 import com.auth0.jwk.UrlJwkProvider
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.auth0.jwt.interfaces.DecodedJWT
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.github.kittinunf.fuel.httpPost
@@ -18,8 +19,7 @@ fun main(args: Array<String>) {
 
     try {
         verifyToken(json["access_token"].toString())
-    }
-    catch (exception: Exception) {
+    } catch (exception: Exception) {
         println("Invalid Token!")
         throw exception
     }
@@ -27,7 +27,7 @@ fun main(args: Array<String>) {
     println("Valid Token!")
 }
 
-fun verifyToken(token: String) {
+fun verifyToken(token: String): DecodedJWT {
     val jwkProvider = UrlJwkProvider(URL("http://localhost:5000/.well-known/openid-configuration/jwks"))
 
     val jwt = JWT.decode(token)
@@ -46,5 +46,5 @@ fun verifyToken(token: String) {
             .withAudience("api1") // aud
             .build()
 
-    val verifiedToken = verifier.verify(token)
+    return verifier.verify(token)
 }
