@@ -8,16 +8,14 @@ fun AuthenticationPipeline.bearerAuthentication(realm: String) {
     intercept(AuthenticationPipeline.RequestAuthentication) { context ->
         // parse token
         val authHeader = call.request.parseAuthorizationHeader()
-        val scheme = authHeader?.authScheme == "Bearer"
-        val jwt: DecodedJWT? = scheme.let {
-            if (authHeader is HttpAuthHeader.Single) {
-                try {
-                    verifyToken(authHeader.blob)
-                } catch (e: Exception) {
-                    null
-                }
-            } else null
-        }
+        val jwt: DecodedJWT? =
+                if (authHeader?.authScheme == "Bearer" && authHeader is HttpAuthHeader.Single) {
+                    try {
+                        verifyToken(authHeader.blob)
+                    } catch (e: Exception) {
+                        null
+                    }
+                } else null
 
         // transform token to principal
         val principal = jwt?.let { UserIdPrincipal(jwt.subject ?: jwt.getClaim("client_id").asString()) }

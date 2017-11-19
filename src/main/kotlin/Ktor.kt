@@ -12,12 +12,8 @@ fun main(args: Array<String>) {
             get("/") {
                 call.respondText("Ktor Working!", ContentType.Text.Html)
             }
-            route("/api", HttpMethod.Get) {
-                authentication {
-                    bearerAuthentication("api1")
-                }
-                handle {
-                    /*val authHeader = call.request.parseAuthorizationHeader()
+            /*get("/api") {
+                val authHeader = call.request.parseAuthorizationHeader()
 
                     if (!(authHeader == null || authHeader !is HttpAuthHeader.Single || authHeader.authScheme != "Bearer")) {
                         try {
@@ -32,8 +28,13 @@ fun main(args: Array<String>) {
                         call.respondText("Hello ${call.principal<UserIdPrincipal>()?.name}!")
                     } else {
                         call.respond(UnauthorizedResponse(HttpAuthHeader.Parameterized("Bearer", mapOf("realm" to "api1"))))
-                    }*/
-
+                    }
+            }*/
+            route("/api", HttpMethod.Get) {
+                authentication {
+                    bearerAuthentication("api1")
+                }
+                handle {
                     call.respondText("Hello ${call.principal<UserIdPrincipal>()?.name}")
                 }
             }
