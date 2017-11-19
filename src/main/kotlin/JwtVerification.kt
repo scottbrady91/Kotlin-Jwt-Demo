@@ -41,7 +41,7 @@ fun verifyToken(token: String): DecodedJWT {
         else -> throw Exception("Unsupported algorithm")
     }
 
-    val verifier = JWT.require(algorithm)
+    val verifier = JWT.require(algorithm) // signature
             .withIssuer("http://localhost:5000") // iss
             .withAudience("api1") // aud
             .build()

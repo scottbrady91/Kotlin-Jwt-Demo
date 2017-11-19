@@ -12,20 +12,30 @@ fun main(args: Array<String>) {
             get("/") {
                 call.respondText("Ktor Working!", ContentType.Text.Html)
             }
-            get("/api") {
-                val authHeader = call.request.parseAuthorizationHeader()
-
-                if (!(authHeader == null || authHeader !is HttpAuthHeader.Single || authHeader.authScheme != "Bearer")) {
-                    try {
-                        val  jwt = verifyToken(authHeader.blob)
-                        context.authentication.principal = UserIdPrincipal(jwt.subject ?: jwt.getClaim("client_id").asString())
-                    } catch (e: Exception) {
-                        // ignore invalid token
-                    }
+            route("/api", HttpMethod.Get) {
+                authentication {
+                    bearerAuthentication("api1")
                 }
+                handle {
+                    /*val authHeader = call.request.parseAuthorizationHeader()
 
-                if (call.principal<UserIdPrincipal>() != null) call.respondText("Hello ${call.principal<UserIdPrincipal>()?.name}!")
-                else call.respond(UnauthorizedResponse(HttpAuthHeader.Parameterized("Bearer", mapOf("realm" to "api1"))))
+                    if (!(authHeader == null || authHeader !is HttpAuthHeader.Single || authHeader.authScheme != "Bearer")) {
+                        try {
+                            val jwt = verifyToken(authHeader.blob)
+                            context.authentication.principal = UserIdPrincipal(jwt.subject ?: jwt.getClaim("client_id").asString())
+                        } catch (e: Exception) {
+                            // ignore invalid token
+                        }
+                    }
+
+                    if (call.principal<UserIdPrincipal>() != null) {
+                        call.respondText("Hello ${call.principal<UserIdPrincipal>()?.name}!")
+                    } else {
+                        call.respond(UnauthorizedResponse(HttpAuthHeader.Parameterized("Bearer", mapOf("realm" to "api1"))))
+                    }*/
+
+                    call.respondText("Hello ${call.principal<UserIdPrincipal>()?.name}")
+                }
             }
         }
     }
